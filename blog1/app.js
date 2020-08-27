@@ -5,6 +5,7 @@
  * @LastEditTime: 2020-08-24 21:27:39
  * @Description: 
  */
+const querystring = require('querystring')
 const handleBlogRouter = require('./src/router/blog')
 const handleUserRouter = require('./src/router/user')
 
@@ -12,6 +13,14 @@ const serverHandle = (req , res) => {
     // 设置返回格式JSON
     res.setHeader('Content-type', 'application/json')
 
+    // 获取path
+    const url = req.url
+    req.path = url.split('?')[0]
+
+
+    // 解析query
+    req.query = querystring.parse(url.split('?')[1])
+    // 路由业务逻辑拆分出去，分层
     // 处理blog路由
     const blogData = handleBlogRouter(req, res)
     if(blogData) {
