@@ -9,31 +9,6 @@ const querystring = require("querystring");
 const handleBlogRouter = require("./src/router/blog");
 const handleUserRouter = require("./src/router/user");
 
-// 用于处理postdata
-const getPostData = (req) => {
-  const promise = new Promise((resolve, reject) => {
-    if (req.method !== "POST") {
-      resolve({});
-      return;
-    }
-    if (req.headers["Content-type"] !== "application/json") {
-      resolve({});
-      return;
-    }
-    let postData = "";
-    req.on("data", (chunk) => {
-      postData += chunk.toString();
-    });
-    req.on("end", () => {
-      if (!postData) {
-        resolve({});
-        return;
-      }
-      resolve(JSON.parse(postData));
-    });
-  });
-  return promise;
-};
 
 const serverHandle = (req, res) => {
   // 设置返回格式JSON
@@ -69,6 +44,32 @@ const serverHandle = (req, res) => {
     res.write("404 not Ffffound\n");
     res.end();
   });
+};
+
+// 用于处理postdata
+const getPostData = (req) => {
+  const promise = new Promise((resolve, reject) => {
+    if (req.method !== "POST") {
+      resolve({});
+      return;
+    }
+    if (req.headers["Content-type"] !== "application/json") {
+      resolve({});
+      return;
+    }
+    let postData = "";
+    req.on("data", (chunk) => {
+      postData += chunk.toString();
+    });
+    req.on("end", () => {
+      if (!postData) {
+        resolve({});
+        return;
+      }
+      resolve(JSON.parse(postData));
+    });
+  });
+  return promise;
 };
 
 // common.js模块规范
