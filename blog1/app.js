@@ -40,7 +40,7 @@ const serverHandle = (req, res) => {
     }
 
     // 未命中路由 返回404
-    res.writeHead(404, { "Content-type": "text/plain" });
+    res.writeHead(404, { "Content-type": "text/plain" }); // text/plain默认纯文本
     res.write("404 not Ffffound\n");
     res.end();
   });
