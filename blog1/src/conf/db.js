@@ -15,7 +15,7 @@ if(env === 'dev') {
 }
 
 if(env === 'production') {
-    // 生成环境 应该是真实服务器配置
+    // 生产环境 应该是真实服务器配置
     MYSQL_CONF = {
         host: 'localhost',
         user: 'root',
