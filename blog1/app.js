@@ -5,10 +5,22 @@
  * @LastEditTime: 2020-08-28 15:13:38
  * @Description:
  */
+const { mainModule } = require("process");
 const querystring = require("querystring");
 const handleBlogRouter = require("./src/router/blog");
 const handleUserRouter = require("./src/router/user");
 
+
+// 获取 cookie的 过期时间
+const getCookieExpires = () => {
+  const d = new Date()
+  d.setTime(d.getTime() + (24 * 60 * 60 * 1000))
+  console.log('d.toGMTString()', d.toGMTString())
+  return d.toGMTString()
+}
+
+// 用于处理 post data
+const SESSION_DATA = {}
 
 const serverHandle = (req, res) => {
   // 设置返回格式JSON
@@ -20,6 +32,38 @@ const serverHandle = (req, res) => {
 
   // 解析query
   req.query = querystring.parse(url.split("?")[1]);
+
+  // 解析cookie
+  req.cookie = {}
+  const cookieStr = req.headers.cookie || '' // k1=v11;k2=v2;k3=v3
+  cookieStr.split(";").forEach(item => {
+    if(!item) {
+      return
+    }
+    const arr = item.split("=")
+    const key = arr[0]
+    const val = arr[1]
+    req.cookie[key] = val
+  })
+  console.log('req.cookie is', req.cookie)
+
+  // 解析 seesion
+  let needSetCookie = false
+  let userId = req.cookie.userid
+  if(userId) {
+    if (!SESSION_DATA[userId]) {
+      SESSION_DATA[userId] = {}
+    }
+  }
+  else {
+    needSetCookie = true
+    userId = `${Date.now()}_${Math.random()}`
+    SESSION_DATA[userId] = {}
+  }
+  req.session = SESSION_DATA[userId]
+
+  
+
   // 路由业务逻辑拆分出去，分层
 
   getPostData(req).then((postData) => {
@@ -35,6 +79,11 @@ const serverHandle = (req, res) => {
     const blogResult = handleBlogRouter(req, res)
     if(blogResult) {
         blogResult.then(blogData => {
+          if(needSetCookie) {
+          // 后端操作cookie httpOnly只能后端改 前端不能改
+            res.setHeader('Set-Cookie', `userId=${userId}; path=/; httpOnly; expires=${getCookieExpires()}`)
+
+          }
           res.end(JSON.stringify(blogData));
         })
         return
@@ -49,6 +98,11 @@ const serverHandle = (req, res) => {
     const userResult = handleUserRouter(req, res);
     if(userResult) {
       userResult.then(userData => {
+        if(needSetCookie) {
+          // 后端操作cookie httpOnly只能后端改 前端不能改
+          res.setHeader('Set-Cookie', `userId=${userId}; path=/; httpOnly; expires=${getCookieExpires()}`)
+
+        }
         res.end(JSON.stringify(userData))
       })
       return
