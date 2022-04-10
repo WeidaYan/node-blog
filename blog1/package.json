@@ -16,6 +16,7 @@
   "license": "ISC",
   "dependencies": {
     "mysql": "^2.18.1",
+    "redis": "^2.8.0",
     "typings": "^2.1.1"
   }
 }
