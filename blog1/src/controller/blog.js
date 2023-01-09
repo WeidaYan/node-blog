@@ -5,6 +5,7 @@
  * @LastEditTime: 2020-08-28 10:24:30
  * @Description: 
  */
+const xss = require('xss')
 const { exec } = require('../db/mysql')
 
 const getList = (author, keyword) => {
@@ -30,7 +31,7 @@ const getDetail = (id) => {
 
 const newBlog = (blogData = {}) => {
     // blogData 是一个博客对象，包含title content author属性
-    const title = blogData.title
+    const title = xss(blogData.title)
     const content = blogData.content
     const author = blogData.author
     const createtime = Date.now()

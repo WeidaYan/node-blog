@@ -1,8 +1,8 @@
 /*
  * @Author: yanweida 
  * @Date: 2022-04-04 16:04:51 
- * @Last Modified by:   yanweida 
- * @Last Modified time: 2022-04-04 16:04:51 
+ * @Last Modified by: mikey.zhaopeng
+ * @Last Modified time: 2023-01-08 21:07:42
  */
 const mysql = require('mysql')
 const { MYSQL_CONF } = require('../conf/db')
@@ -33,5 +33,6 @@ function exec(sql) {
 
 
 module.exports = {
-    exec
+    exec,
+    escape: mysql.escape
 } 
