@@ -11,7 +11,7 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}\\blog1\\bin\\www.js"
+            "program": "${workspaceFolder}\\blog-express\\bin\\www"
         }
     ]
 }
