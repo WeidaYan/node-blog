@@ -4,6 +4,8 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const session = require('express-session')
+const RedisStore = require('connect-redis')(session)
+
 
 // var indexRouter = require('./routes/index');
 // var usersRouter = require('./routes/users');
@@ -23,7 +25,13 @@ app.use(cookieParser());
 // app.use(express.static(path.join(__dirname, 'public')));
 
 
+const redisClient = require('./db/redis')
+const sessionStore = new RedisStore({
+  client: redisClient
+})
+
 app.use(session({
+  store: sessionStore, //session存在redis中
   secret: 'YWjk#9527', //随便定义
   cookie: {
     path: '/', //默认配置
