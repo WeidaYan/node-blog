@@ -13,8 +13,10 @@ router.get('/list', (req, res, next) => {
     // return new SuccessModel(listData);
 
     if(req.query.isadmin) {
+      console.log('is admin')
       // 管理员界面
       if(req.session.username == null) {
+        console.log('is admin, but not login')
         // 未登录
         res.json(
           new ErrorModel('未登录')

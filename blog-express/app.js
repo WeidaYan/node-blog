@@ -18,7 +18,23 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-app.use(logger('dev'));
+const ENV =process.NODE_ENV
+if(ENV !== 'production') {
+  //开发或测试环境
+  app.use(logger('dev'))
+}
+else {
+  //线上环境
+  const logFileName = path.join(__dirname, 'logs', 'access.log')
+  const writeStream = fs.createWriteStream(logFileName, {
+    flag: 'a'
+  })
+  app.use(logger('combined', {
+    stream: writeStream
+  }));
+}
+
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
